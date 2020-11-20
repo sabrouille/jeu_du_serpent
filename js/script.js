@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     //Le jeu
    class Jeu{   // Majuscule par convention
        //Toujours commencer par une fct constructeur
-       constructor(_idSvg, _idPointage) {   //_ pour différencier des variables
+       constructor(_idSvg, _idPointage) {   //_ pour différencier les paramètres des variables
            console.log("Création du jeu");
 
            this.s = Snap(_idSvg);   //this pour appeler la classe
@@ -14,15 +14,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
        }
 
        nouvellePartie(){
+           this.finPartie();
+
            this.affichagePointage(1);
 
-           this.pomme = new Pomme();
+           this.pomme = new Pomme(this);
 
            this.serpent = new Serpent();
        }
 
        finPartie(){
-
+           if(this.pomme !== undefined){
+               this.pomme.supprimePomme();
+               this.pomme = undefined;
+           }
        }
 
        affichagePointage(_lePointage){
@@ -40,8 +45,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     //La pomme
     class Pomme{
-       constructor() {
+       constructor(_leJeu) {
            console.log("Création de la pomme");
+
+           this.leJeu = _leJeu;
+
+           this.pomme = [];
+
+           this.ajoutePomme();
+       }
+
+       ajoutePomme(){
+           var posX = Math.floor(Math.random() * this.leJeu.grandeurGrille);
+           var posY = Math.floor(Math.random() * this.leJeu.grandeurGrille);
+
+           this.pomme = [this.leJeu.s.rect(posX * this.leJeu.grandeurCarre, posY * this.leJeu.grandeurCarre, this.leJeu.grandeurCarre, this.leJeu.grandeurCarre).attr({fill: "red"}), posX, posY];
+
+       }
+
+       supprimePomme(){
+           this.pomme[0].remove();
        }
     }
 
